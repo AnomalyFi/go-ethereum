@@ -36,6 +36,9 @@ const (
 	DefaultGraphQLPort = 8547        // Default TCP port for the GraphQL server
 	DefaultAuthHost    = "localhost" // Default host interface for the authenticated apis
 	DefaultAuthPort    = 8551        // Default port for the authenticated apis
+	// nodekit
+	DefaultNodeKitWSHost = "[::1]" // Default host interface for the NodeKit server
+	DefaultNodeKitWSPort = 50051   // Default port for the NodeKit server
 )
 
 var (
@@ -65,6 +68,9 @@ var DefaultConfig = Config{
 		NAT:        nat.Any(),
 	},
 	DBEngine: "",
+	// nodekit
+	NodeKitWSHost: DefaultNodeKitWSHost,
+	NodeKitWSPort: DefaultNodeKitWSPort,
 }
 
 // DefaultDataDir is the default data directory to use for the databases and other

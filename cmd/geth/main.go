@@ -182,6 +182,12 @@ var (
 		utils.AllowUnprotectedTxs,
 	}
 
+	nodekitFlags = []cli.Flag{
+		utils.NodeKitEnabledFlag,
+		utils.NodeKitWSHostFlag,
+		utils.NodeKitWSPortFlag,
+	}
+
 	metricsFlags = []cli.Flag{
 		utils.MetricsEnabledFlag,
 		utils.MetricsEnabledExpensiveFlag,
@@ -245,6 +251,7 @@ func init() {
 	app.Flags = flags.Merge(
 		nodeFlags,
 		rpcFlags,
+		nodekitFlags,
 		consoleFlags,
 		debug.Flags,
 		metricsFlags,

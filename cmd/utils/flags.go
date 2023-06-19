@@ -792,6 +792,25 @@ var (
 		Category: flags.APICategory,
 	}
 
+	// NodeKit WS address and port overrides
+	NodeKitEnabledFlag = &cli.BoolFlag{
+		Name:     "nodekit",
+		Usage:    "Enable the NodeKit Listener",
+		Category: flags.APICategory,
+	}
+	NodeKitWSHostFlag = &cli.StringFlag{
+		Name:     "nodekit.addr",
+		Usage:    "NodeKit WS server listening interface",
+		Value:    ethconfig.Defaults.NodeKitWSHost,
+		Category: flags.APICategory,
+	}
+	NodeKitWSPortFlag = &cli.IntFlag{
+		Name:     "nodekit.port",
+		Usage:    "NodeKit WS server listening port",
+		Value:    ethconfig.Defaults.NodeKitWSPort,
+		Category: flags.APICategory,
+	}
+
 	// Network Settings
 	MaxPeersFlag = &cli.IntFlag{
 		Name:     "maxpeers",
@@ -1858,6 +1877,14 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		}
 	}
 
+	// Nodekit
+	if ctx.IsSet(NodeKitWSHostFlag.Name) {
+		cfg.NodeKitWSHost = ctx.String(NodeKitWSHostFlag.Name)
+	}
+	if ctx.IsSet(NodeKitWSPortFlag.Name) {
+		cfg.NodeKitWSPort = ctx.Int(NodeKitWSPortFlag.Name)
+	}
+
 	// Override any default configs for hard coded networks.
 	switch {
 	case ctx.Bool(MainnetFlag.Name):
@@ -2010,9 +2037,9 @@ func RegisterEthService(stack *node.Node, cfg *ethconfig.Config) (ethapi.Backend
 			Fatalf("Failed to create the LES server: %v", err)
 		}
 	}
-	if err := ethcatalyst.Register(stack, backend); err != nil {
-		Fatalf("Failed to register the Engine API service: %v", err)
-	}
+	// if err := ethcatalyst.Register(stack, backend); err != nil {
+	// 	Fatalf("Failed to register the Engine API service: %v", err)
+	// }
 	stack.RegisterAPIs(tracers.APIs(backend.APIBackend))
 	return backend.APIBackend, backend
 }
@@ -2029,6 +2056,15 @@ func RegisterGraphQLService(stack *node.Node, backend ethapi.Backend, filterSyst
 	err := graphql.New(stack, backend, filterSystem, cfg.GraphQLCors, cfg.GraphQLVirtualHosts)
 	if err != nil {
 		Fatalf("Failed to register the GraphQL service: %v", err)
+	}
+}
+
+//TODO might need to add something similar for nodekit
+//RegisterGRPCService adds the gRPC API to the node.
+//It was done this way so that our grpc execution server can access the ethapi.Backend
+func RegisterGRPCService(stack *node.Node, execServer executionv1.ExecutionServiceServer, cfg *node.Config) {
+	if err := node.NewNodeKitListenerHandler(stack, execServer, cfg); err != nil {
+		Fatalf("Failed to register the NodeKit Listener service: %v", err)
 	}
 }
 

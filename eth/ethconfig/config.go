@@ -90,6 +90,11 @@ var Defaults = Config{
 	RPCEVMTimeout:           5 * time.Second,
 	GPO:                     FullNodeGPO,
 	RPCTxFeeCap:             1, // 1 ether
+
+	//TODO need to fix this
+	// NodeKit WS
+	NodeKitWSHost: "localhost",
+	NodeKitWSPort: 9090,
 }
 
 func init() {
@@ -207,6 +212,10 @@ type Config struct {
 
 	// OverrideShanghai (TODO: remove after the fork)
 	OverrideShanghai *uint64 `toml:",omitempty"`
+
+	// NodeKit WS Host and Port
+	NodeKitWSHost string `toml:",omitempty"`
+	NodeKitWSPort int    `toml:",omitempty"`
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain configuration.

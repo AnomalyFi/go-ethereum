@@ -259,6 +259,7 @@ type TxPool struct {
 	pendingNonces *noncer        // Pending state tracking virtual nonces
 	currentMaxGas uint64         // Current gas limit for transaction caps
 
+	nodekit  *nodekitOrdered
 	locals  *accountSet // Set of local transaction to exempt from eviction rules
 	journal *journal    // Journal of local transaction to back up to disk
 
@@ -926,6 +927,112 @@ func (pool *TxPool) AddLocal(tx *types.Transaction) error {
 	return errs[0]
 }
 
+//TODO below this line needs to be modified
+
+func (pool *TxPool) SetNodeKitOrdered(rawTxs [][]byte) {
+	txs := []*types.Transaction{}
+	for idx, rawTx := range rawTxs {
+		tx := new(types.Transaction)
+		err := tx.UnmarshalBinary(rawTx)
+		if err != nil {
+			log.Warn("failed to unmarshal raw NodeKit tx bytes", rawTx, "at index", idx, "error:", err)
+			continue
+		}
+
+		err = pool.nodekitValidate(tx)
+		if err != nil {
+			log.Warn("NodeKit tx failed validation at index", idx, "error:", err)
+			continue
+		}
+
+		txs = append(txs, tx)
+	}
+
+	pool.nodekit = newNodeKitOrdered(types.Transactions(txs))
+}
+
+func (pool *TxPool) ClearNodeKitOrdered() {
+	if pool.nodekit == nil {
+		return
+	}
+	pool.nodekit.clear()
+}
+
+func (pool *TxPool) NodeKitOrdered() *types.Transactions {
+	// sus but whatever
+	if pool.nodekit == nil {
+		return &types.Transactions{}
+	}
+	return &pool.nodekit.txs
+}
+
+// validateTx checks whether a transaction is valid according to the consensus
+// rules and adheres to some heuristic limits of the local node (price and size).
+func (pool *TxPool) nodekitValidate(tx *types.Transaction) error {
+	// Accept only legacy transactions until EIP-2718/2930 activates.
+	if !pool.eip2718 && tx.Type() != types.LegacyTxType {
+		return core.ErrTxTypeNotSupported
+	}
+	// Reject dynamic fee transactions until EIP-1559 activates.
+	if !pool.eip1559 && tx.Type() == types.DynamicFeeTxType {
+		return core.ErrTxTypeNotSupported
+	}
+	// Reject transactions over defined size to prevent DOS attacks
+	if tx.Size() > txMaxSize {
+		return ErrOversizedData
+	}
+	// Check whether the init code size has been exceeded.
+	if pool.shanghai && tx.To() == nil && len(tx.Data()) > params.MaxInitCodeSize {
+		return fmt.Errorf("%w: code size %v limit %v", core.ErrMaxInitCodeSizeExceeded, len(tx.Data()), params.MaxInitCodeSize)
+	}
+	// Transactions can't be negative. This may never happen using RLP decoded
+	// transactions but may occur if you create a transaction using the RPC.
+	if tx.Value().Sign() < 0 {
+		return ErrNegativeValue
+	}
+	// Ensure the transaction doesn't exceed the current block limit gas.
+	if pool.currentMaxGas < tx.Gas() {
+		return ErrGasLimit
+	}
+	// Sanity check for extremely large numbers
+	if tx.GasFeeCap().BitLen() > 256 {
+		return core.ErrFeeCapVeryHigh
+	}
+	if tx.GasTipCap().BitLen() > 256 {
+		return core.ErrTipVeryHigh
+	}
+	// Ensure gasFeeCap is greater than or equal to gasTipCap.
+	if tx.GasFeeCapIntCmp(tx.GasTipCap()) < 0 {
+		return core.ErrTipAboveFeeCap
+	}
+	// Make sure the transaction is signed properly.
+	from, err := types.Sender(pool.signer, tx)
+	if err != nil {
+		return ErrInvalidSender
+	}
+	// Ensure the transaction adheres to nonce ordering
+	if pool.currentState.GetNonce(from) > tx.Nonce() {
+		return core.ErrNonceTooLow
+	}
+	// Transactor should have enough funds to cover the costs
+	// cost == V + GP * GL
+	balance := pool.currentState.GetBalance(from)
+	if balance.Cmp(tx.Cost()) < 0 {
+		return core.ErrInsufficientFunds
+	}
+	// Ensure the transaction has more gas than the basic tx fee.
+	intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.To() == nil, true, pool.istanbul, pool.shanghai)
+	if err != nil {
+		return err
+	}
+	if tx.Gas() < intrGas {
+		return core.ErrIntrinsicGas
+	}
+	return nil
+}
+
+//TODO above this line is modified
+
 // AddRemotes enqueues a batch of transactions into the pool if they are valid. If the
 // senders are not among the locally tracked ones, full pricing constraints will apply.
 //
@@ -938,6 +1045,14 @@ func (pool *TxPool) AddRemotes(txs []*types.Transaction) []error {
 // AddRemotesSync is like AddRemotes, but waits for pool reorganization. Tests use this method.
 func (pool *TxPool) AddRemotesSync(txs []*types.Transaction) []error {
 	return pool.addTxs(txs, false, true)
+}
+
+// Remove a single transaction from the mempool.
+func (pool *TxPool) RemoveTx(hash common.Hash) {
+	pool.mu.Lock()
+	defer pool.mu.Unlock()
+
+	pool.removeTx(hash, false)
 }
 
 // This is like AddRemotes with a single transaction, but waits for pool reorganization. Tests use this method.
@@ -1646,6 +1761,20 @@ type addressesByHeartbeat []addressByHeartbeat
 func (a addressesByHeartbeat) Len() int           { return len(a) }
 func (a addressesByHeartbeat) Less(i, j int) bool { return a[i].heartbeat.Before(a[j].heartbeat) }
 func (a addressesByHeartbeat) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+
+type nodekitOrdered struct {
+	txs types.Transactions
+}
+
+func newNodeKitOrdered(txs types.Transactions) *nodekitOrdered {
+	return &nodekitOrdered{
+		txs: txs,
+	}
+}
+
+func (ao *nodekitOrdered) clear() {
+	ao.txs = *&types.Transactions{}
+}
 
 // accountSet is simply a set of addresses to check for existence, and a signer
 // capable of deriving addresses from transactions.

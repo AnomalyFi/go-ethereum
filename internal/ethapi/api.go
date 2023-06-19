@@ -1696,6 +1696,19 @@ func SubmitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 	if err := b.SendTx(ctx, tx); err != nil {
 		return common.Hash{}, err
 	}
+
+	// send to NodeKit instead of mempool
+	txBytes, err := tx.MarshalBinary()
+	if err != nil {
+		return common.Hash{}, err
+	}
+
+	//TODO this needs to be jsonrpc
+	nodekitAPI := NewNodeKitAPI(b.NodeKitWSEndpoint())
+	if err := nodekitAPI.SubmitTransaction(txBytes); err != nil {
+		return common.Hash{}, err
+	}
+
 	// Print a log with full tx details for manual investigations and interventions
 	signer := types.MakeSigner(b.ChainConfig(), b.CurrentBlock().Number)
 	from, err := types.Sender(signer, tx)
