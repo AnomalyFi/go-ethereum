@@ -22,7 +22,6 @@ import (
 	"github.com/ethereum/go-ethereum/eth"
 	"github.com/ethereum/go-ethereum/eth/catalyst"
 	"github.com/ethereum/go-ethereum/log"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // executionServiceServer is the implementation of the ExecutionServiceServer interface.
@@ -39,9 +38,9 @@ type ExecutionServiceServer struct {
 }
 
 type DoBlockRequest struct {
-	PrevStateRoot []byte                 `protobuf:"bytes,1,opt,name=prev_state_root,json=prevStateRoot,proto3" json:"prev_state_root,omitempty"`
-	Transactions  [][]byte               `protobuf:"bytes,2,rep,name=transactions,proto3" json:"transactions,omitempty"`
-	Timestamp     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	PrevStateRoot []byte   `protobuf:"bytes,1,opt,name=prev_state_root,json=prevStateRoot,proto3" json:"prev_state_root,omitempty"`
+	Transactions  [][]byte `protobuf:"bytes,2,rep,name=transactions,proto3" json:"transactions,omitempty"`
+	Timestamp     int64
 }
 
 func NewExecutionServiceServer(eth *eth.Ethereum) *ExecutionServiceServer {
@@ -95,8 +94,8 @@ func (s *ExecutionServiceServer) WSBlock(JSONRPCEndpoint string, chainID ids.ID,
 			//TODO need to look at Block object structure in hypersdk
 			s.DoBlock(context.TODO(), &DoBlockRequest{
 				PrevStateRoot: s.executionState,
-				Transactions: txs,
-				Timestamp: ,
+				Transactions:  txs,
+				Timestamp:     blk.Tmstmp,
 			})
 		}
 
@@ -120,7 +119,7 @@ func (s *ExecutionServiceServer) DoBlock(ctx context.Context, req *DoBlockReques
 		FinalizedBlockHash: prevHeadHash,
 	}
 	payloadAttributes := &engine.PayloadAttributes{
-		Timestamp:             uint64(req.Timestamp.GetSeconds()),
+		Timestamp:             uint64(req.Timestamp),
 		Random:                common.Hash{},
 		SuggestedFeeRecipient: common.Address{},
 	}
