@@ -1,7 +1,3 @@
-// Package execution provides the gRPC server for the execution layer.
-//
-// Its procedures will be called from the conductor. It is responsible
-// for immediately executing lists of ordered transactions that come from the shared sequencer.
 package execution
 
 //TODO this is the code I need to modify the most for the websocket implementation to work
@@ -26,11 +22,6 @@ import (
 
 // executionServiceServer is the implementation of the ExecutionServiceServer interface.
 type ExecutionServiceServer struct {
-	// NOTE - from the generated code:
-	// All implementations must embed UnimplementedExecutionServiceServer
-	// for forward compatibility
-	//executionv1.UnimplementedExecutionServiceServer
-
 	consensus      *catalyst.ConsensusAPI
 	eth            *eth.Ethereum
 	bc             *core.BlockChain
