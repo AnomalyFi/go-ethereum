@@ -32,10 +32,10 @@ type ExecutionServiceServer struct {
 	// for forward compatibility
 	//executionv1.UnimplementedExecutionServiceServer
 
-	consensus *catalyst.ConsensusAPI
-	eth       *eth.Ethereum
-
-	bc *core.BlockChain
+	consensus      *catalyst.ConsensusAPI
+	eth            *eth.Ethereum
+	bc             *core.BlockChain
+	executionState []byte
 }
 
 type DoBlockRequest struct {
@@ -49,10 +49,13 @@ func NewExecutionServiceServer(eth *eth.Ethereum) *ExecutionServiceServer {
 
 	bc := eth.BlockChain()
 
+	currHead := eth.BlockChain().CurrentHeader()
+
 	return &ExecutionServiceServer{
-		eth:       eth,
-		consensus: consensus,
-		bc:        bc,
+		eth:            eth,
+		consensus:      consensus,
+		bc:             bc,
+		executionState: currHead.Hash().Bytes(),
 	}
 }
 
@@ -61,7 +64,7 @@ func (s *ExecutionServiceServer) WSBlock(JSONRPCEndpoint string, chainID ids.ID,
 	if err := websocketClient.RegisterBlocks(); err != nil {
 		return err
 	}
-	//TODO need to implement something for last block hash
+	//TODO need to implement something for last block hash aka PrevStateRoot
 	// var lastBlock []byte
 	parser, err := cli.Parser(ctx)
 	if err != nil {
@@ -81,12 +84,22 @@ func (s *ExecutionServiceServer) WSBlock(JSONRPCEndpoint string, chainID ids.ID,
 				case *actions.SequencerMsg:
 					summaryStr = fmt.Sprintf("data: %s", string(action.Data))
 					//TODO this should add the relevant transactions from a block and then call DoBlock to execute them.
-					// if action.ChainId == "CHAINID" {
-					// 	txs = append(txs, action.Data)
-					// }
+					if action.ChainId == "CHAINID" {
+						txs = append(txs, action.Data)
+					}
 				}
 			}
 		}
+		n := len(txs)
+		if n > 0 {
+			//TODO need to look at Block object structure in hypersdk
+			s.DoBlock(context.TODO(), &DoBlockRequest{
+				PrevStateRoot: s.executionState,
+				Transactions: txs,
+				Timestamp: ,
+			})
+		}
+
 	}
 
 	return nil
@@ -158,6 +171,7 @@ func (s *ExecutionServiceServer) DoBlock(ctx context.Context, req *DoBlockReques
 		return err
 	}
 
+	s.executionState = fcEndResp.PayloadStatus.LatestValidHash.Bytes()
 	// res := &executionv1.DoBlockResponse{
 	// 	BlockHash: fcEndResp.PayloadStatus.LatestValidHash.Bytes(),
 	// }
@@ -183,9 +197,6 @@ func (s *ExecutionServiceServer) FinalizeBlock(ctx context.Context, BlockHash []
 
 func (s *ExecutionServiceServer) InitState() ([]byte, error) {
 	currHead := s.eth.BlockChain().CurrentHeader()
-	// res := &executionv1.InitStateResponse{
-	// 	BlockHash: currHead.Hash().Bytes(),
-	// }
 
 	return currHead.Hash().Bytes(), nil
 }
