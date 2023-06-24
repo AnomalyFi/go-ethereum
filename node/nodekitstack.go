@@ -8,7 +8,7 @@ import (
 
 	"github.com/AnomalyFi/hypersdk/rpc"
 	"github.com/ava-labs/avalanchego/ids"
-	executionv1 "github.com/ethereum/AnomalyFi/ws/execution"
+	executionv1 "github.com/ethereum/ethereum/ws/execution"
 	"github.com/ethereum/go-ethereum/log"
 )
 
