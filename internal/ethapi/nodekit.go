@@ -1,9 +1,7 @@
 package ethapi
 
-//TODO this needs to be modified to work with our sdk
-
 import (
-	nodekittx "https://github.com/AnomalyFi/nodekit-sdk/tx"
+	nodekittx "github.com/AnomalyFi/nodekit-sdk/tx"
 	"github.com/ethereum/go-ethereum/log"
 )
 
