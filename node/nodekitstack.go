@@ -17,7 +17,7 @@ type NodeKitListenerHandler struct {
 	mu sync.Mutex
 
 	websocketClient        *rpc.WebSocketClient
-	executionServiceServer *executionv1.ExecutionServiceServer
+	executionServiceServer executionv1.ExecutionServiceServer
 }
 
 // NewNodeKitListenerHandler creates a new NodeKit Listener.
@@ -33,7 +33,7 @@ func NewNodeKitListenerHandler(node *Node, execService executionv1.ExecutionServ
 
 	serverHandler := &NodeKitListenerHandler{
 		websocketClient:        websocketClient,
-		executionServiceServer: &execService,
+		executionServiceServer: execService,
 	}
 
 	// executionv1.RegisterExecutionServiceServer(server, execService)
@@ -71,3 +71,6 @@ func (handler *NodeKitListenerHandler) Stop() error {
 	log.Info("NodeKit listener stopped")
 	return nil
 }
+
+
+why does the above code give this error:  handler.executionServiceServer.WSBlock undefined (type *structs.ExecutionServiceServer is pointer to interface, not interface)
