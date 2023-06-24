@@ -17,5 +17,5 @@ func NewNodeKitAPI(endpoint string) *NodeKitAPI {
 }
 
 func (api *NodeKitAPI) SubmitTransaction(tx []byte) error {
-	return nodekittx.BuildAndSendSecondaryTransaction(api.endpoint, secondaryChainID, tx)
+	return nodekittx.BuildAndSendTransaction(api.endpoint, secondaryChainID, tx)
 }
