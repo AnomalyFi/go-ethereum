@@ -13,7 +13,7 @@ type NodeKitAPI struct {
 	endpoint string
 }
 
-func NewNodeKitAPI(endpoint string) *MetroAPI {
+func NewNodeKitAPI(endpoint string) *NodeKitAPI {
 	log.Info("NewNodeKitAPI", "endpoint", endpoint)
 	return &NodeKitAPI{endpoint: endpoint}
 }
