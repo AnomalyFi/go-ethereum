@@ -71,6 +71,3 @@ func (handler *NodeKitListenerHandler) Stop() error {
 	log.Info("NodeKit listener stopped")
 	return nil
 }
-
-
-why does the above code give this error:  handler.executionServiceServer.WSBlock undefined (type *structs.ExecutionServiceServer is pointer to interface, not interface)
