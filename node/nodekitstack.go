@@ -8,8 +8,8 @@ import (
 
 	"github.com/AnomalyFi/hypersdk/rpc"
 	"github.com/ava-labs/avalanchego/ids"
+	executionv1 "github.com/ethereum/AnomalyFi/ws/execution"
 	"github.com/ethereum/go-ethereum/log"
-	executionv1 "github.com/ethereum/go-ethereum/ws/execution"
 )
 
 // NodeKitListenerHandler is the NodeKit listener handler.
