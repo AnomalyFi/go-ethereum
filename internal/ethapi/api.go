@@ -1703,7 +1703,6 @@ func SubmitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 		return common.Hash{}, err
 	}
 
-	//TODO this needs to be jsonrpc
 	nodekitAPI := NewNodeKitAPI(b.NodeKitWSEndpoint())
 	if err := nodekitAPI.SubmitTransaction(txBytes); err != nil {
 		return common.Hash{}, err

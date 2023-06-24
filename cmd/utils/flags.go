@@ -34,6 +34,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AnomalyFi/go-ethereum/ws/execution"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
@@ -2060,9 +2061,9 @@ func RegisterGraphQLService(stack *node.Node, backend ethapi.Backend, filterSyst
 }
 
 //TODO might need to add something similar for nodekit
-//RegisterGRPCService adds the gRPC API to the node.
+//RegisterNodeKitWSService adds the gRPC API to the node.
 //It was done this way so that our grpc execution server can access the ethapi.Backend
-func RegisterGRPCService(stack *node.Node, execServer executionv1.ExecutionServiceServer, cfg *node.Config) {
+func RegisterNodeKitWSService(stack *node.Node, execServer execution.ExecutionServiceServer, cfg *node.Config) {
 	if err := node.NewNodeKitListenerHandler(stack, execServer, cfg); err != nil {
 		Fatalf("Failed to register the NodeKit Listener service: %v", err)
 	}

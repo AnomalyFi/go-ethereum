@@ -3,6 +3,7 @@ package execution
 //TODO this is the code I need to modify the most for the websocket implementation to work
 // It will not be a server anymore but will instead just be the methods I call to start the node
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"time"
@@ -50,13 +51,18 @@ func NewExecutionServiceServer(eth *eth.Ethereum) *ExecutionServiceServer {
 }
 
 func (s *ExecutionServiceServer) WSBlock(JSONRPCEndpoint string, chainID ids.ID, ctx context.Context, websocketClient *rpc.WebSocketClient) error {
+	executionState, err := s.InitState()
+	s.executionState = executionState
+
 	cli := trpc.NewJSONRPCClient(JSONRPCEndpoint, chainID)
 	if err := websocketClient.RegisterBlocks(); err != nil {
 		return err
 	}
-	//TODO need to implement something for last block hash aka PrevStateRoot
-	// var lastBlock []byte
+
 	parser, err := cli.Parser(ctx)
+
+	tempchainId := []byte("ethereum")
+
 	if err != nil {
 		return err
 	}
@@ -72,9 +78,8 @@ func (s *ExecutionServiceServer) WSBlock(JSONRPCEndpoint string, chainID ids.ID,
 			if result.Success {
 				switch action := tx.Action.(type) {
 				case *actions.SequencerMsg:
-					summaryStr = fmt.Sprintf("data: %s", string(action.Data))
 					//TODO this should add the relevant transactions from a block and then call DoBlock to execute them.
-					if action.ChainId == "CHAINID" {
+					if bytes.Equal(action.ChainId, tempchainId) {
 						txs = append(txs, action.Data)
 					}
 				}

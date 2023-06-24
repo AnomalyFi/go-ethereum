@@ -272,7 +272,8 @@ func (c *Config) NodeKitWSEndpoint() string {
 	if c.NodeKitWSHost == "" {
 		return ""
 	}
-	return fmt.Sprintf("%s:%d", c.NodeKitWSHost, c.NodeKitWSPort)
+	return c.NodeKitWSHost
+	//return fmt.Sprintf("%s:%d", c.NodeKitWSHost, c.NodeKitWSPort)
 }
 
 // DefaultHTTPEndpoint returns the HTTP endpoint used by default.

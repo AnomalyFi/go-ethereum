@@ -19,7 +19,6 @@ package les
 import (
 	"context"
 	"errors"
-	"fmt"
 	"math/big"
 	"time"
 
@@ -294,7 +293,8 @@ func (b *LesApiBackend) UnprotectedAllowed() bool {
 }
 
 func (b *LesApiBackend) NodeKitWSEndpoint() string {
-	return fmt.Sprintf("%s:%d", b.eth.config.NodeKitWSHost, b.eth.config.NodeKitWSPort)
+	return b.eth.config.NodeKitWSHost
+	//return fmt.Sprintf("%s:%d", b.eth.config.NodeKitWSHost, b.eth.config.NodeKitWSPort)
 }
 
 func (b *LesApiBackend) RPCGasCap() uint64 {

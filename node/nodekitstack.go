@@ -3,10 +3,11 @@ package node
 //TODO need to fix this to work with websocket client
 
 import (
-	"fmt"
+	"context"
 	"sync"
 
 	"github.com/AnomalyFi/hypersdk/rpc"
+	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ethereum/go-ethereum/log"
 	executionv1 "github.com/ethereum/go-ethereum/ws/execution"
 )
@@ -25,7 +26,7 @@ func NewNodeKitListenerHandler(node *Node, execService executionv1.ExecutionServ
 
 	// Create a new WebSocketClient
 	//TODO need to fix this
-	websocketClient, err := rpc.NewWebSocketClient("your_websocket_uri")
+	websocketClient, err := rpc.NewWebSocketClient("http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr")
 	if err != nil {
 		return err
 	}
@@ -46,25 +47,15 @@ func (handler *NodeKitListenerHandler) Start() error {
 	handler.mu.Lock()
 	defer handler.mu.Unlock()
 
-	// if handler.endpoint == "" {
-	// 	return nil
-	// }
+	//TODO fix this
+	JSONRPCEndpoint := "http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr"
 
-	// // Start the gRPC server
-	// lis, err := net.Listen("tcp", handler.endpoint)
-	// if err != nil {
-	// 	return err
-	// }
+	chainID, err := ids.FromString("2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr")
 
-	blockHash, err := handler.executionServiceServer.InitState()
 	if err != nil {
 		return err
 	}
-	fmt.Println(blockHash)
-
-	//TODO create a method that listens to block and integrates with DoBlock
-	// I can probably just create a method in the execution service itself to help with this
-	//go handler.websocketClient.ListenBlock(context.Background(), nil) // Add this line to start listening to blocks
+	go handler.executionServiceServer.WSBlock(JSONRPCEndpoint, chainID, context.Background(), handler.websocketClient)
 
 	log.Info("NodeKit Listener started")
 	return nil
@@ -75,7 +66,8 @@ func (handler *NodeKitListenerHandler) Stop() error {
 	handler.mu.Lock()
 	defer handler.mu.Unlock()
 
+	handler.websocketClient.Close()
 	// handler.server.Stop()
-	log.Info("gRPC server stopped", "endpoint", handler.endpoint)
+	log.Info("NodeKit listener stopped")
 	return nil
 }

@@ -26,6 +26,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
+	"github.com/AnomalyFi/go-ethereum/ws/execution"
 	"github.com/ethereum/go-ethereum/accounts/external"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/accounts/scwallet"
@@ -33,7 +34,6 @@ import (
 	"github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/ethereum/go-ethereum/eth/downloader"
 	"github.com/ethereum/go-ethereum/eth/ethconfig"
-	"github.com/ethereum/go-ethereum/grpc/execution"
 	"github.com/ethereum/go-ethereum/internal/ethapi"
 	"github.com/ethereum/go-ethereum/internal/flags"
 	"github.com/ethereum/go-ethereum/internal/version"

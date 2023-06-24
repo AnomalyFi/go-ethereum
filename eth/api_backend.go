@@ -19,7 +19,6 @@ package eth
 import (
 	"context"
 	"errors"
-	"fmt"
 	"math/big"
 	"time"
 
@@ -353,7 +352,8 @@ func (b *EthAPIBackend) UnprotectedAllowed() bool {
 }
 
 func (b *EthAPIBackend) NodeKitWSEndpoint() string {
-	return fmt.Sprintf("%s:%d", b.eth.config.NodeKitWSHost, b.eth.config.NodeKitWSPort)
+	return b.eth.config.NodeKitWSHost
+	//return fmt.Sprintf("%s:%d", b.eth.config.NodeKitWSHost, b.eth.config.NodeKitWSPort)
 }
 
 func (b *EthAPIBackend) RPCGasCap() uint64 {
