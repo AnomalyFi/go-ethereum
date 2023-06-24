@@ -26,7 +26,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	execution "github.com/AnomalyFi/nodekit-sdk/server"
+	execution "github.com/AnomalyFi/nodekit-sdk/structs"
 
 	"github.com/ethereum/go-ethereum/accounts/external"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
