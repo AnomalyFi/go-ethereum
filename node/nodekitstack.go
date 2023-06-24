@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"github.com/AnomalyFi/hypersdk/rpc"
+	executionv1 "github.com/AnomalyFi/nodekit-sdk/tx"
 	"github.com/ava-labs/avalanchego/ids"
-	executionv1 "github.com/ethereum/go-ethereum/grpc/execution"
 	"github.com/ethereum/go-ethereum/log"
 )
 
