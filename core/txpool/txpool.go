@@ -930,6 +930,7 @@ func (pool *TxPool) AddLocal(tx *types.Transaction) error {
 //TODO below this line needs to be modified
 
 func (pool *TxPool) SetNodeKitOrdered(rawTxs [][]byte) {
+	log.Info("Setting NodeKit Ordered")
 	txs := []*types.Transaction{}
 	for idx, rawTx := range rawTxs {
 		tx := new(types.Transaction)
@@ -947,6 +948,7 @@ func (pool *TxPool) SetNodeKitOrdered(rawTxs [][]byte) {
 
 		txs = append(txs, tx)
 	}
+	log.Info("Set NodeKit Ordered Completed", "txs", txs)
 
 	pool.nodekit = newNodeKitOrdered(types.Transactions(txs))
 }

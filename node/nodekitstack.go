@@ -42,7 +42,7 @@ func NewNodeKitListenerHandler(node *Node, execService executionv1.ExecutionServ
 	return nil
 }
 
-// Start starts the gRPC server if it is enabled.
+// Start starts the NodeKit listener if it is enabled.
 func (handler *NodeKitListenerHandler) Start() error {
 	handler.mu.Lock()
 	defer handler.mu.Unlock()
@@ -61,7 +61,7 @@ func (handler *NodeKitListenerHandler) Start() error {
 	return nil
 }
 
-// Stop stops the gRPC server.
+// Stop stops the NodeKit listener.
 func (handler *NodeKitListenerHandler) Stop() error {
 	handler.mu.Lock()
 	defer handler.mu.Unlock()
