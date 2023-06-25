@@ -3,8 +3,8 @@ module github.com/ethereum/go-ethereum
 go 1.19
 
 require (
-	github.com/AnomalyFi/hypersdk v0.5.0
-	github.com/AnomalyFi/nodekit-sdk v0.4.0
+	github.com/AnomalyFi/hypersdk v0.6.0
+	github.com/AnomalyFi/nodekit-sdk v0.5.0
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v0.3.0
 	github.com/VictoriaMetrics/fastcache v1.10.0
 	github.com/ava-labs/avalanchego v1.10.1
@@ -72,7 +72,7 @@ require (
 )
 
 require (
-	github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230618162152-33c6ea8470bd // indirect
+	github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230625003339-200cce40fc1b // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v0.21.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v0.8.3 // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect

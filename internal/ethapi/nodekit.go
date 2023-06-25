@@ -17,5 +17,5 @@ func NewNodeKitAPI(endpoint string) *NodeKitAPI {
 }
 
 func (api *NodeKitAPI) SubmitTransaction(tx []byte) error {
-	return nodekittx.BuildAndSendTransaction(api.endpoint, secondaryChainID, tx)
+	return nodekittx.BuildAndSendTransaction("http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr", "ethereum", tx)
 }

@@ -2,8 +2,12 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/AnomalyFi/hypersdk v0.5.0 h1:6qNiMJnPCBrpheHHOOvv3iygu0AL5zLGUeHEMTaApL8=
 github.com/AnomalyFi/hypersdk v0.5.0/go.mod h1:6HehhFepxUsLBxUwnBhak+h7gSNYNdSvkDTOAiWR3kw=
+github.com/AnomalyFi/hypersdk v0.6.0 h1:5GujQVB4fRBKQCBJqF+YSgCz6ymG4gdwIifKgYcTDJk=
+github.com/AnomalyFi/hypersdk v0.6.0/go.mod h1:6HehhFepxUsLBxUwnBhak+h7gSNYNdSvkDTOAiWR3kw=
 github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230618162152-33c6ea8470bd h1:6cLn+ou3spTrNNEzNVKTU54Z8vNanL2eZiPubLR6rQM=
 github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230618162152-33c6ea8470bd/go.mod h1:fJf7fSXs7AiYcMHCQKdmA0QZ3V6UHpUvgdFSrBjS8Fk=
+github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230625003339-200cce40fc1b h1:yr+pzrGv+MM4KCWfDoXrv2YIlInphW/0BCTHRGCM9ws=
+github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230625003339-200cce40fc1b/go.mod h1:fJf7fSXs7AiYcMHCQKdmA0QZ3V6UHpUvgdFSrBjS8Fk=
 github.com/AnomalyFi/nodekit-sdk v0.4.0 h1:TGplZE7DeN00vkfAw9nlWjNEvC5hJ8A7/tzCUCDhO2Q=
 github.com/AnomalyFi/nodekit-sdk v0.4.0/go.mod h1:peeue/Fie3RJvd7nsBQ5Pjgep0H6l38S09QQPjwIQPY=
 github.com/Azure/azure-sdk-for-go/sdk/azcore v0.21.1 h1:qoVeMsc9/fh/yhxVaA0obYjVH/oI/ihrOoMwsLS9KSA=
