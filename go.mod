@@ -1,4 +1,4 @@
-module github.com/ethereum/go-ethereum
+module github.com/AnomalyFi/go-ethereum
 
 go 1.19
 
@@ -159,4 +159,4 @@ require (
 	rsc.io/tmplfunc v0.0.3 // indirect
 )
 
-replace github.com/AnomalyFi/nodekit-sdk => /home/anomalyfi/code/nodekit-sdk
+//replace github.com/AnomalyFi/nodekit-sdk => /home/anomalyfi/code/nodekit-sdk

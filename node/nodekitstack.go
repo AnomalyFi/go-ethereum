@@ -1,7 +1,5 @@
 package node
 
-//TODO need to fix this to work with websocket client
-
 import (
 	"context"
 	"sync"
@@ -35,8 +33,6 @@ func NewNodeKitListenerHandler(node *Node, execService executionv1.ExecutionServ
 		websocketClient:        websocketClient,
 		executionServiceServer: execService,
 	}
-
-	// executionv1.RegisterExecutionServiceServer(server, execService)
 
 	node.RegisterNodeKitListener(serverHandler)
 	return nil
