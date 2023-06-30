@@ -16,6 +16,8 @@ type NodeKitListenerHandler struct {
 
 	websocketClient        *rpc.WebSocketClient
 	executionServiceServer executionv1.ExecutionServiceServer
+	host                   string
+	chainId                string
 }
 
 // NewNodeKitListenerHandler creates a new NodeKit Listener.
@@ -23,8 +25,9 @@ type NodeKitListenerHandler struct {
 func NewNodeKitListenerHandler(node *Node, execService executionv1.ExecutionServiceServer, cfg *Config) error {
 
 	// Create a new WebSocketClient
+
 	//TODO need to fix this
-	websocketClient, err := rpc.NewWebSocketClient("http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr")
+	websocketClient, err := rpc.NewWebSocketClient(cfg.NodeKitWSHost)
 	if err != nil {
 		return err
 	}
@@ -32,6 +35,8 @@ func NewNodeKitListenerHandler(node *Node, execService executionv1.ExecutionServ
 	serverHandler := &NodeKitListenerHandler{
 		websocketClient:        websocketClient,
 		executionServiceServer: execService,
+		host:                   cfg.NodeKitWSHost,
+		chainId:                cfg.NodeKitChainId,
 	}
 
 	node.RegisterNodeKitListener(serverHandler)
@@ -44,14 +49,14 @@ func (handler *NodeKitListenerHandler) Start() error {
 	defer handler.mu.Unlock()
 
 	//TODO fix this
-	JSONRPCEndpoint := "http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr"
+	//JSONRPCEndpoint := "http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr"
 
-	chainID, err := ids.FromString("2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr")
+	chainID, err := ids.FromString(handler.chainId)
 
 	if err != nil {
 		return err
 	}
-	go handler.executionServiceServer.WSBlock(JSONRPCEndpoint, chainID, context.Background(), handler.websocketClient)
+	go handler.executionServiceServer.WSBlock(handler.host, chainID, context.Background(), handler.websocketClient)
 
 	log.Info("NodeKit Listener started")
 	return nil

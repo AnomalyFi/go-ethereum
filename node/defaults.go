@@ -37,8 +37,8 @@ const (
 	DefaultAuthHost    = "localhost" // Default host interface for the authenticated apis
 	DefaultAuthPort    = 8551        // Default port for the authenticated apis
 	// nodekit
-	DefaultNodeKitWSHost = "[::1]" // Default host interface for the NodeKit server
-	DefaultNodeKitWSPort = 50051   // Default port for the NodeKit server
+	DefaultNodeKitWSHost  = "[::1]" // Default host interface for the NodeKit server
+	DefaultNodeKitChainId = "eth"   // Default port for the NodeKit server
 )
 
 var (
@@ -69,8 +69,8 @@ var DefaultConfig = Config{
 	},
 	DBEngine: "",
 	// nodekit
-	NodeKitWSHost: DefaultNodeKitWSHost,
-	NodeKitWSPort: DefaultNodeKitWSPort,
+	NodeKitWSHost:  DefaultNodeKitWSHost,
+	NodeKitChainId: DefaultNodeKitChainId,
 }
 
 // DefaultDataDir is the default data directory to use for the databases and other

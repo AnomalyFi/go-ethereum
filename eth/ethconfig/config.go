@@ -93,8 +93,8 @@ var Defaults = Config{
 
 	//TODO need to fix this
 	// NodeKit WS
-	NodeKitWSHost: "localhost",
-	NodeKitWSPort: 9090,
+	NodeKitWSHost:  "localhost",
+	NodeKitChainId: "eth",
 }
 
 func init() {
@@ -214,8 +214,8 @@ type Config struct {
 	OverrideShanghai *uint64 `toml:",omitempty"`
 
 	// NodeKit WS Host and Port
-	NodeKitWSHost string `toml:",omitempty"`
-	NodeKitWSPort int    `toml:",omitempty"`
+	NodeKitWSHost  string `toml:",omitempty"`
+	NodeKitChainId string `toml:",omitempty"`
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain configuration.

@@ -185,7 +185,7 @@ var (
 	nodekitFlags = []cli.Flag{
 		utils.NodeKitEnabledFlag,
 		utils.NodeKitWSHostFlag,
-		utils.NodeKitWSPortFlag,
+		utils.NodeKitChainIdFlag,
 	}
 
 	metricsFlags = []cli.Flag{

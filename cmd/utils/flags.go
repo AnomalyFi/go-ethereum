@@ -807,10 +807,10 @@ var (
 		Value:    ethconfig.Defaults.NodeKitWSHost,
 		Category: flags.APICategory,
 	}
-	NodeKitWSPortFlag = &cli.IntFlag{
-		Name:     "nodekit.port",
-		Usage:    "NodeKit WS server listening port",
-		Value:    ethconfig.Defaults.NodeKitWSPort,
+	NodeKitChainIdFlag = &cli.StringFlag{
+		Name:     "nodekit.chainid",
+		Usage:    "NodeKit WS server Chain ID",
+		Value:    ethconfig.Defaults.NodeKitChainId,
 		Category: flags.APICategory,
 	}
 
@@ -1884,8 +1884,8 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	if ctx.IsSet(NodeKitWSHostFlag.Name) {
 		cfg.NodeKitWSHost = ctx.String(NodeKitWSHostFlag.Name)
 	}
-	if ctx.IsSet(NodeKitWSPortFlag.Name) {
-		cfg.NodeKitWSPort = ctx.Int(NodeKitWSPortFlag.Name)
+	if ctx.IsSet(NodeKitChainIdFlag.Name) {
+		cfg.NodeKitChainId = ctx.String(NodeKitChainIdFlag.Name)
 	}
 
 	// Override any default configs for hard coded networks.

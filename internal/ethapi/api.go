@@ -1703,7 +1703,7 @@ func SubmitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 		return common.Hash{}, err
 	}
 
-	nodekitAPI := NewNodeKitAPI(b.NodeKitWSEndpoint())
+	nodekitAPI := NewNodeKitAPI(b.NodeKitWSEndpoint(), b.NodeKitChainIdValue())
 	if err := nodekitAPI.SubmitTransaction(txBytes); err != nil {
 		return common.Hash{}, err
 	}

@@ -192,8 +192,8 @@ type Config struct {
 	// NodeKitWSHost is the host interface on which to start the NodeKitWS server. If this
 	// field is empty, no NodeKitWS API endpoint will be started.
 	NodeKitWSHost string `toml:",omitempty"`
-	// NodeKitWSPort is the TCP port number on which to start the NodeKitWS server.
-	NodeKitWSPort int `toml:",omitempty"`
+	// NodeKitChainId is the chainId for the subnet related to the NodeKitWSHost
+	NodeKitChainId string `toml:",omitempty"`
 
 	// Logger is a custom logger to use with the p2p.Server.
 	Logger log.Logger `toml:",omitempty"`
@@ -273,7 +273,14 @@ func (c *Config) NodeKitWSEndpoint() string {
 		return ""
 	}
 	return c.NodeKitWSHost
-	//return fmt.Sprintf("%s:%d", c.NodeKitWSHost, c.NodeKitWSPort)
+}
+
+// NodeKitChainId resolves a NodeKitChainId based on the configured host interface
+func (c *Config) NodeKitChainIdValue() string {
+	if c.NodeKitChainId == "" {
+		return ""
+	}
+	return c.NodeKitChainId
 }
 
 // DefaultHTTPEndpoint returns the HTTP endpoint used by default.

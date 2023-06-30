@@ -100,6 +100,7 @@ type Backend interface {
 
 	// NodeKit WS endpoint
 	NodeKitWSEndpoint() string
+	NodeKitChainIdValue() string
 }
 
 func GetAPIs(apiBackend Backend) []rpc.API {

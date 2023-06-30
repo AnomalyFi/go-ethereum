@@ -294,7 +294,10 @@ func (b *LesApiBackend) UnprotectedAllowed() bool {
 
 func (b *LesApiBackend) NodeKitWSEndpoint() string {
 	return b.eth.config.NodeKitWSHost
-	//return fmt.Sprintf("%s:%d", b.eth.config.NodeKitWSHost, b.eth.config.NodeKitWSPort)
+}
+
+func (b *LesApiBackend) NodeKitChainIdValue() string {
+	return b.eth.config.NodeKitChainId
 }
 
 func (b *LesApiBackend) RPCGasCap() uint64 {
