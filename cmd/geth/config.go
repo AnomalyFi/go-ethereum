@@ -139,6 +139,7 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, gethConfig) {
 
 	// Apply flags.
 	utils.SetNodeConfig(ctx, &cfg.Node)
+
 	stack, err := node.New(&cfg.Node)
 	if err != nil {
 		utils.Fatalf("Failed to create the protocol stack: %v", err)
@@ -176,6 +177,8 @@ func makeFullNode(ctx *cli.Context) (*node.Node, ethapi.Backend) {
 
 	// Configure NodeKit if requested.
 	if ctx.IsSet(utils.NodeKitEnabledFlag.Name) {
+		cfg.Node.NodeKitWSHost = ctx.String(utils.NodeKitWSHostFlag.Name)
+		cfg.Node.NodeKitChainId = ctx.String(utils.NodeKitChainIdFlag.Name)
 		service := execution.NewExecutionServiceServer(eth)
 		utils.RegisterNodeKitWSService(stack, service, &cfg.Node)
 	}

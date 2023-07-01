@@ -26,7 +26,6 @@ func NewNodeKitListenerHandler(node *Node, execService executionv1.ExecutionServ
 
 	// Create a new WebSocketClient
 
-	//TODO need to fix this
 	websocketClient, err := rpc.NewWebSocketClient(cfg.NodeKitWSHost)
 	if err != nil {
 		return err
