@@ -76,6 +76,10 @@ var Defaults = Config{
 	RPCEVMTimeout:           5 * time.Second,
 	GPO:                     FullNodeGPO,
 	RPCTxFeeCap:             1, // 1 ether
+
+	// NodeKit WS
+	NodeKitWSHost:  "localhost",
+	NodeKitChainId: "eth",
 }
 
 //go:generate go run github.com/fjl/gencodec -type Config -formats toml -out gen_config.go
@@ -160,8 +164,18 @@ type Config struct {
 	// send-transaction variants. The unit is ether.
 	RPCTxFeeCap float64
 
-	// OverrideCancun (TODO: remove after the fork)
-	OverrideCancun *uint64 `toml:",omitempty"`
+	// Checkpoint is a hardcoded checkpoint which can be nil.
+	Checkpoint *params.TrustedCheckpoint `toml:",omitempty"`
+
+	// CheckpointOracle is the configuration for checkpoint oracle.
+	CheckpointOracle *params.CheckpointOracleConfig `toml:",omitempty"`
+
+	// OverrideShanghai (TODO: remove after the fork)
+	OverrideShanghai *uint64 `toml:",omitempty"`
+
+	// NodeKit WS Host and Port
+	NodeKitWSHost  string `toml:",omitempty"`
+	NodeKitChainId string `toml:",omitempty"`
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain config.

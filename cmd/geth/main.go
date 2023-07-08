@@ -172,6 +172,12 @@ var (
 		utils.BatchResponseMaxSize,
 	}
 
+	nodekitFlags = []cli.Flag{
+		utils.NodeKitEnabledFlag,
+		utils.NodeKitWSHostFlag,
+		utils.NodeKitChainIdFlag,
+	}
+
 	metricsFlags = []cli.Flag{
 		utils.MetricsEnabledFlag,
 		utils.MetricsEnabledExpensiveFlag,
@@ -233,6 +239,7 @@ func init() {
 	app.Flags = flags.Merge(
 		nodeFlags,
 		rpcFlags,
+		nodekitFlags,
 		consoleFlags,
 		debug.Flags,
 		metricsFlags,

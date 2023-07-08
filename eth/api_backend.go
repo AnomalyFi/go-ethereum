@@ -374,6 +374,14 @@ func (b *EthAPIBackend) UnprotectedAllowed() bool {
 	return b.allowUnprotectedTxs
 }
 
+func (b *EthAPIBackend) NodeKitWSEndpoint() string {
+	return b.eth.config.NodeKitWSHost
+}
+
+func (b *EthAPIBackend) NodeKitChainIdValue() string {
+	return b.eth.config.NodeKitChainId
+}
+
 func (b *EthAPIBackend) RPCGasCap() uint64 {
 	return b.eth.config.RPCGasCap
 }

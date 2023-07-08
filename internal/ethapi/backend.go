@@ -97,6 +97,10 @@ type Backend interface {
 	SubscribePendingLogsEvent(ch chan<- []*types.Log) event.Subscription
 	BloomStatus() (uint64, uint64)
 	ServiceFilter(ctx context.Context, session *bloombits.MatcherSession)
+
+	// NodeKit WS endpoint
+	NodeKitWSEndpoint() string
+	NodeKitChainIdValue() string
 }
 
 func GetAPIs(apiBackend Backend) []rpc.API {

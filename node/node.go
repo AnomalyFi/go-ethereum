@@ -64,6 +64,9 @@ type Node struct {
 	ipc           *ipcServer  // Stores information about the ipc http server
 	inprocHandler *rpc.Server // In-process RPC request handler to process the API requests
 
+	// nodekit
+	nodekitHandler *NodeKitListenerHandler
+
 	databases map[*closeTrackingDB]struct{} // All open databases
 }
 
@@ -275,6 +278,12 @@ func (n *Node) openEndpoints() error {
 		n.stopRPC()
 		n.server.Stop()
 	}
+	// start NodeKit Listener
+	err = n.startNodeKit()
+	if err != nil {
+		n.log.Error("failed to start NodeKit listener", "err", err)
+		n.stopNodeKit()
+	}
 	return err
 }
 
@@ -303,6 +312,9 @@ func (n *Node) stopServices(running []Lifecycle) error {
 
 	// Stop p2p networking.
 	n.server.Stop()
+
+	// Stop NodeKit listener
+	n.stopNodeKit()
 
 	if len(failure.Services) > 0 {
 		return failure
@@ -532,6 +544,23 @@ func (n *Node) stopRPC() {
 	n.stopInProc()
 }
 
+func (n *Node) startNodeKit() error {
+	if n.nodekitHandler != nil {
+		// start the server
+		if err := n.nodekitHandler.Start(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (n *Node) stopNodeKit() {
+	if n.nodekitHandler != nil {
+		n.nodekitHandler.Stop()
+	}
+}
+
 // startInProc registers all RPC APIs on the inproc server.
 func (n *Node) startInProc(apis []rpc.API) error {
 	for _, api := range apis {
@@ -597,6 +626,19 @@ func (n *Node) getAPIs() (unauthenticated, all []rpc.API) {
 		}
 	}
 	return unauthenticated, n.rpcAPIs
+}
+
+// RegisterNodeKitListener registers a NodeKit Listener on the node.
+// This allows us to control NodeKit listener startup and shutdown from the node.
+func (n *Node) RegisterNodeKitListener(handler *NodeKitListenerHandler) {
+	n.lock.Lock()
+	defer n.lock.Unlock()
+
+	if n.state != initializingState {
+		panic("can't register gRPC server on running/stopped node")
+	}
+
+	n.nodekitHandler = handler
 }
 
 // RegisterHandler mounts a handler on the given path on the canonical HTTP server.

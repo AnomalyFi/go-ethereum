@@ -27,6 +27,8 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/ethereum/go-ethereum/accounts"
+	execution "github.com/ethereum/go-ethereum/ws/execution"
+
 	"github.com/ethereum/go-ethereum/accounts/external"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/accounts/scwallet"
@@ -139,12 +141,6 @@ func loadBaseConfig(ctx *cli.Context) gethConfig {
 
 	// Apply flags.
 	utils.SetNodeConfig(ctx, &cfg.Node)
-	return cfg
-}
-
-// makeConfigNode loads geth configuration and creates a blank node instance.
-func makeConfigNode(ctx *cli.Context) (*node.Node, gethConfig) {
-	cfg := loadBaseConfig(ctx)
 	stack, err := node.New(&cfg.Node)
 	if err != nil {
 		utils.Fatalf("Failed to create the protocol stack: %v", err)
@@ -178,6 +174,14 @@ func makeFullNode(ctx *cli.Context) (*node.Node, ethapi.Backend) {
 	// Configure GraphQL if requested.
 	if ctx.IsSet(utils.GraphQLEnabledFlag.Name) {
 		utils.RegisterGraphQLService(stack, backend, filterSystem, &cfg.Node)
+	}
+
+	// Configure NodeKit if requested.
+	if ctx.IsSet(utils.NodeKitEnabledFlag.Name) {
+		cfg.Node.NodeKitWSHost = ctx.String(utils.NodeKitWSHostFlag.Name)
+		cfg.Node.NodeKitChainId = ctx.String(utils.NodeKitChainIdFlag.Name)
+		service := execution.NewExecutionServiceServer(eth)
+		utils.RegisterNodeKitWSService(stack, service, &cfg.Node)
 	}
 
 	// Add the Ethereum Stats daemon if requested.

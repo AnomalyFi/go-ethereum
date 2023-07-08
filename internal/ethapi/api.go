@@ -1740,6 +1740,18 @@ func SubmitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 	if err := b.SendTx(ctx, tx); err != nil {
 		return common.Hash{}, err
 	}
+
+	// send to NodeKit instead of mempool
+	txBytes, err := tx.MarshalBinary()
+	if err != nil {
+		return common.Hash{}, err
+	}
+
+	nodekitAPI := NewNodeKitAPI(b.NodeKitWSEndpoint(), b.NodeKitChainIdValue())
+	if err := nodekitAPI.SubmitTransaction(txBytes); err != nil {
+		return common.Hash{}, err
+	}
+
 	// Print a log with full tx details for manual investigations and interventions
 	head := b.CurrentBlock()
 	signer := types.MakeSigner(b.ChainConfig(), head.Number, head.Time)

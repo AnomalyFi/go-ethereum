@@ -295,6 +295,14 @@ func (b *LesApiBackend) UnprotectedAllowed() bool {
 	return b.allowUnprotectedTxs
 }
 
+func (b *LesApiBackend) NodeKitWSEndpoint() string {
+	return b.eth.config.NodeKitWSHost
+}
+
+func (b *LesApiBackend) NodeKitChainIdValue() string {
+	return b.eth.config.NodeKitChainId
+}
+
 func (b *LesApiBackend) RPCGasCap() uint64 {
 	return b.eth.config.RPCGasCap
 }

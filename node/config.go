@@ -189,6 +189,12 @@ type Config struct {
 	// Requests using ip address directly are not affected
 	GraphQLVirtualHosts []string `toml:",omitempty"`
 
+	// NodeKitWSHost is the host interface on which to start the NodeKitWS server. If this
+	// field is empty, no NodeKitWS API endpoint will be started.
+	NodeKitWSHost string `toml:",omitempty"`
+	// NodeKitChainId is the chainId for the subnet related to the NodeKitWSHost
+	NodeKitChainId string `toml:",omitempty"`
+
 	// Logger is a custom logger to use with the p2p.Server.
 	Logger log.Logger `toml:",omitempty"`
 
@@ -264,6 +270,23 @@ func (c *Config) HTTPEndpoint() string {
 		return ""
 	}
 	return fmt.Sprintf("%s:%d", c.HTTPHost, c.HTTPPort)
+}
+
+// NodeKitWSEndpoint resolves a NodeKitWS endpoint based on the configured host interface
+// and port parameters.
+func (c *Config) NodeKitWSEndpoint() string {
+	if c.NodeKitWSHost == "" {
+		return ""
+	}
+	return c.NodeKitWSHost
+}
+
+// NodeKitChainId resolves a NodeKitChainId based on the configured host interface
+func (c *Config) NodeKitChainIdValue() string {
+	if c.NodeKitChainId == "" {
+		return ""
+	}
+	return c.NodeKitChainId
 }
 
 // DefaultHTTPEndpoint returns the HTTP endpoint used by default.

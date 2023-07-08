@@ -356,3 +356,11 @@ also included in our repository in the `COPYING.LESSER` file.
 The go-ethereum binaries (i.e. all code inside of the `cmd` directory) are licensed under the
 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html), also
 included in our repository in the `COPYING` file.
+
+
+TO TEST after starting NodeKit VM with Ash CLI locally 
+
+make geth
+./build/bin/geth --datadir ~/.nodekit/ init genesis.json
+
+./build/bin/geth --datadir ~/.nodekit/ --http --http.port=8545 --http.addr="0.0.0.0" --networkid=23000 --http.corsdomain='*' --nodekit --nodekit.addr='http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr'  --nodekit.chainid='2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr' 
