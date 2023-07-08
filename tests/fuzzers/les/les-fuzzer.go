@@ -27,6 +27,7 @@ import (
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/txpool"
+	"github.com/ethereum/go-ethereum/core/txpool/legacypool"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -93,13 +94,13 @@ func makeTries() (chtTrie *trie.Trie, bloomTrie *trie.Trie, chtKeys, bloomKeys [
 		// The element in CHT is <big-endian block number> -> <block hash>
 		key := make([]byte, 8)
 		binary.BigEndian.PutUint64(key, uint64(i+1))
-		chtTrie.Update(key, []byte{0x1, 0xf})
+		chtTrie.MustUpdate(key, []byte{0x1, 0xf})
 		chtKeys = append(chtKeys, key)
 
 		// The element in Bloom trie is <2 byte bit index> + <big-endian block number> -> bloom
 		key2 := make([]byte, 10)
 		binary.BigEndian.PutUint64(key2[2:], uint64(i+1))
-		bloomTrie.Update(key2, []byte{0x2, 0xe})
+		bloomTrie.MustUpdate(key2, []byte{0x2, 0xe})
 		bloomKeys = append(bloomKeys, key2)
 	}
 	return
@@ -128,6 +129,9 @@ type fuzzer struct {
 }
 
 func newFuzzer(input []byte) *fuzzer {
+	pool := legacypool.New(legacypool.DefaultConfig, chain)
+	txpool, _ := txpool.New(new(big.Int).SetUint64(legacypool.DefaultConfig.PriceLimit), chain, []txpool.SubPool{pool})
+
 	return &fuzzer{
 		chain:     chain,
 		chainLen:  testChainLen,
@@ -138,7 +142,7 @@ func newFuzzer(input []byte) *fuzzer {
 		chtKeys:   chtKeys,
 		bloomKeys: bloomKeys,
 		nonce:     uint64(len(txHashes)),
-		pool:      txpool.NewTxPool(txpool.DefaultConfig, params.TestChainConfig, chain),
+		pool:      txpool,
 		input:     bytes.NewReader(input),
 	}
 }

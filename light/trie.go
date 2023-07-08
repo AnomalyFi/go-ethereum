@@ -29,6 +29,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/trie"
+	"github.com/ethereum/go-ethereum/trie/trienode"
 )
 
 var (
@@ -107,19 +108,23 @@ type odrTrie struct {
 
 func (t *odrTrie) GetStorage(_ common.Address, key []byte) ([]byte, error) {
 	key = crypto.Keccak256(key)
-	var res []byte
+	var enc []byte
 	err := t.do(key, func() (err error) {
-		res, err = t.trie.TryGet(key)
+		enc, err = t.trie.Get(key)
 		return err
 	})
-	return res, err
+	if err != nil || len(enc) == 0 {
+		return nil, err
+	}
+	_, content, _, err := rlp.Split(enc)
+	return content, err
 }
 
 func (t *odrTrie) GetAccount(address common.Address) (*types.StateAccount, error) {
 	var res types.StateAccount
 	key := crypto.Keccak256(address.Bytes())
 	err := t.do(key, func() (err error) {
-		value, err := t.trie.TryGet(key)
+		value, err := t.trie.Get(key)
 		if err != nil {
 			return err
 		}
@@ -138,33 +143,34 @@ func (t *odrTrie) UpdateAccount(address common.Address, acc *types.StateAccount)
 		return fmt.Errorf("decoding error in account update: %w", err)
 	}
 	return t.do(key, func() error {
-		return t.trie.TryUpdate(key, value)
+		return t.trie.Update(key, value)
 	})
 }
 
 func (t *odrTrie) UpdateStorage(_ common.Address, key, value []byte) error {
 	key = crypto.Keccak256(key)
+	v, _ := rlp.EncodeToBytes(value)
 	return t.do(key, func() error {
-		return t.trie.TryUpdate(key, value)
+		return t.trie.Update(key, v)
 	})
 }
 
 func (t *odrTrie) DeleteStorage(_ common.Address, key []byte) error {
 	key = crypto.Keccak256(key)
 	return t.do(key, func() error {
-		return t.trie.TryDelete(key)
+		return t.trie.Delete(key)
 	})
 }
 
-// TryDeleteAccount abstracts an account deletion from the trie.
+// DeleteAccount abstracts an account deletion from the trie.
 func (t *odrTrie) DeleteAccount(address common.Address) error {
 	key := crypto.Keccak256(address.Bytes())
 	return t.do(key, func() error {
-		return t.trie.TryDelete(key)
+		return t.trie.Delete(key)
 	})
 }
 
-func (t *odrTrie) Commit(collectLeaf bool) (common.Hash, *trie.NodeSet) {
+func (t *odrTrie) Commit(collectLeaf bool) (common.Hash, *trienode.NodeSet) {
 	if t.trie == nil {
 		return t.id.Root, nil
 	}
