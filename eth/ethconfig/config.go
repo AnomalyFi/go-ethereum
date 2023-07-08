@@ -91,7 +91,6 @@ var Defaults = Config{
 	GPO:                     FullNodeGPO,
 	RPCTxFeeCap:             1, // 1 ether
 
-	//TODO need to fix this
 	// NodeKit WS
 	NodeKitWSHost:  "localhost",
 	NodeKitChainId: "eth",

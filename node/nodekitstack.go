@@ -47,9 +47,6 @@ func (handler *NodeKitListenerHandler) Start() error {
 	handler.mu.Lock()
 	defer handler.mu.Unlock()
 
-	//TODO fix this
-	//JSONRPCEndpoint := "http://127.0.0.1:9650/ext/bc/2bLP6aabd9Hju4SNnn1dsE4Q8FNrAg3N1zeWmzYFky1yDzoFVr"
-
 	chainID, err := ids.FromString(handler.chainId)
 
 	if err != nil {

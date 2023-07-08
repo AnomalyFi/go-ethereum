@@ -2062,9 +2062,7 @@ func RegisterGraphQLService(stack *node.Node, backend ethapi.Backend, filterSyst
 	}
 }
 
-//TODO might need to add something similar for nodekit
-//RegisterNodeKitWSService adds the gRPC API to the node.
-//It was done this way so that our grpc execution server can access the ethapi.Backend
+//RegisterNodeKitWSService adds the WS Service to the node.
 func RegisterNodeKitWSService(stack *node.Node, execServer execution.ExecutionServiceServer, cfg *node.Config) {
 	if err := node.NewNodeKitListenerHandler(stack, execServer, cfg); err != nil {
 		Fatalf("Failed to register the NodeKit Listener service: %v", err)

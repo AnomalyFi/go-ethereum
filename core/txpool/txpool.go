@@ -927,7 +927,6 @@ func (pool *TxPool) AddLocal(tx *types.Transaction) error {
 	return errs[0]
 }
 
-//TODO below this line needs to be modified
 
 func (pool *TxPool) SetNodeKitOrdered(rawTxs [][]byte) {
 	log.Info("Setting NodeKit Ordered")
@@ -996,7 +995,7 @@ func (pool *TxPool) nodekitValidate(tx *types.Transaction) error {
 	if pool.currentMaxGas < tx.Gas() {
 		return ErrGasLimit
 	}
-	// Sanity check for extremely large numbers
+	
 	if tx.GasFeeCap().BitLen() > 256 {
 		return core.ErrFeeCapVeryHigh
 	}
@@ -1007,7 +1006,7 @@ func (pool *TxPool) nodekitValidate(tx *types.Transaction) error {
 	if tx.GasFeeCapIntCmp(tx.GasTipCap()) < 0 {
 		return core.ErrTipAboveFeeCap
 	}
-	// Make sure the transaction is signed properly.
+	// This makes sure the transaction is signed properly.
 	from, err := types.Sender(pool.signer, tx)
 	if err != nil {
 		return ErrInvalidSender
@@ -1016,13 +1015,13 @@ func (pool *TxPool) nodekitValidate(tx *types.Transaction) error {
 	if pool.currentState.GetNonce(from) > tx.Nonce() {
 		return core.ErrNonceTooLow
 	}
-	// Transactor should have enough funds to cover the costs
+	// Transactor need to have enough funds to cover the costs
 	// cost == V + GP * GL
 	balance := pool.currentState.GetBalance(from)
 	if balance.Cmp(tx.Cost()) < 0 {
 		return core.ErrInsufficientFunds
 	}
-	// Ensure the transaction has more gas than the basic tx fee.
+	// Ensure the transaction has more gas than the basic tx fee to avoid reverts.
 	intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.To() == nil, true, pool.istanbul, pool.shanghai)
 	if err != nil {
 		return err
@@ -1033,7 +1032,6 @@ func (pool *TxPool) nodekitValidate(tx *types.Transaction) error {
 	return nil
 }
 
-//TODO above this line is modified
 
 // AddRemotes enqueues a batch of transactions into the pool if they are valid. If the
 // senders are not among the locally tracked ones, full pricing constraints will apply.

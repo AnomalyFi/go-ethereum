@@ -1,7 +1,5 @@
 package execution
 
-//TODO this is the code I need to modify the most for the websocket implementation to work
-// It will not be a server anymore but will instead just be the methods I call to start the node
 import (
 	"bytes"
 	"context"
@@ -74,28 +72,22 @@ func (s *ExecutionServiceServer) WSBlock(JSONRPCEndpoint string, chainID ids.ID,
 			return err
 		}
 		var txs [][]byte
-		//TODO need to decode all the messages here instead and bundle the TXDatas into a list of Bytes
 		for i, tx := range blk.Txs {
 			result := results[i]
 			if result.Success {
 				switch action := tx.Action.(type) {
 				case *actions.SequencerMsg:
-					//TODO this should add the relevant transactions from a block and then call DoBlock to execute them.
-					fmt.Println(action.ChainId)
-					fmt.Println(tempchainId)
+					// this should add the relevant transactions from a block and then call DoBlock to execute them.
 					if bytes.Equal(action.ChainId, tempchainId) {
-						fmt.Println("FOUND TRANSACTIONS FROM HYPERSDK")
 						txs = append(txs, action.Data)
 					}
 				}
 			}
 		}
-		fmt.Println("GOT TRANSACTIONS FROM HYPERSDK")
 
 		n := len(txs)
 		if n > 0 {
-			fmt.Println("Submitted TRANSACTIONS FROM HYPERSDK")
-			//TODO need to look at Block object structure in hypersdk
+			fmt.Println("Submitted Txs From NodeKit SEQ")
 			err = s.DoBlock(context.TODO(), &executionv1.DoBlockRequest{
 				PrevStateRoot: s.executionState,
 				Transactions:  txs,
@@ -140,8 +132,8 @@ func (s *ExecutionServiceServer) DoBlock(ctx context.Context, req *executionv1.D
 
 	log.Info("DoBlock ForkChoice Updated", "request", req)
 
-	// super janky but this is what the payload builder requires :/ (miner.worker.buildPayload())
-	// we should probably just execute + store the block directly instead of using the engine api.
+	// Payload builder needs this (miner.worker.buildPayload())
+	// In the future we should execute + store block instead of using engine api
 	time.Sleep(time.Second)
 	payloadResp, err := s.consensus.GetPayloadV1(*fcStartResp.PayloadID)
 	if err != nil {
