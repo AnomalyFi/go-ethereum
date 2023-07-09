@@ -2,10 +2,10 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/AnomalyFi/hypersdk v0.6.0 h1:5GujQVB4fRBKQCBJqF+YSgCz6ymG4gdwIifKgYcTDJk=
 github.com/AnomalyFi/hypersdk v0.6.0/go.mod h1:6HehhFepxUsLBxUwnBhak+h7gSNYNdSvkDTOAiWR3kw=
-github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230625003339-200cce40fc1b h1:yr+pzrGv+MM4KCWfDoXrv2YIlInphW/0BCTHRGCM9ws=
-github.com/AnomalyFi/hypersdk/examples/tokenvm v0.0.0-20230625003339-200cce40fc1b/go.mod h1:fJf7fSXs7AiYcMHCQKdmA0QZ3V6UHpUvgdFSrBjS8Fk=
-github.com/AnomalyFi/nodekit-sdk v0.7.0 h1:io20Qdm7h7PTAR4/NPnlnQlJt7zdCWpd2BViHqgWXiU=
-github.com/AnomalyFi/nodekit-sdk v0.7.0/go.mod h1:gbUY75jDp7f8IEGwqeVjRyVSgmAKUOmY84dd2a5zHfw=
+github.com/AnomalyFi/nodekit-sdk v0.10.0 h1:jOpGY8wnaumlMIchMclgPWuh5oXKO2UbjIxfmNsU2iI=
+github.com/AnomalyFi/nodekit-sdk v0.10.0/go.mod h1:WYQ6mgAmmlPvFrKEeXxoGRZ7ihJh89Vr0u1X/dpDUWI=
+github.com/AnomalyFi/nodekit-seq v0.1.0 h1:YYtuinQqvt1BVacokjfeFgDxjBBRlCd1DapBjcNvbss=
+github.com/AnomalyFi/nodekit-seq v0.1.0/go.mod h1:owR7GSfyjsAnW1vHjQuJFX/b9liVnDyxwFT9MBYBmjM=
 github.com/Azure/azure-sdk-for-go/sdk/azcore v0.21.1 h1:qoVeMsc9/fh/yhxVaA0obYjVH/oI/ihrOoMwsLS9KSA=
 github.com/Azure/azure-sdk-for-go/sdk/azcore v0.21.1/go.mod h1:fBF9PQNqB8scdgpZ3ufzaLntG0AG7C1WjPMsiFOmfHM=
 github.com/Azure/azure-sdk-for-go/sdk/internal v0.8.3 h1:E+m3SkZCN0Bf5q7YdTs5lSm2CYY3CK4spn5OmUIiQtk=

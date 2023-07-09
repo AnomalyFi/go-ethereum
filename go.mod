@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/AnomalyFi/hypersdk v0.6.0
-	github.com/AnomalyFi/nodekit-seq v0.1.0
 	github.com/AnomalyFi/nodekit-sdk v0.10.0
+	github.com/AnomalyFi/nodekit-seq v0.1.0
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v0.3.0
 	github.com/VictoriaMetrics/fastcache v1.10.0
 	github.com/ava-labs/avalanchego v1.10.1
