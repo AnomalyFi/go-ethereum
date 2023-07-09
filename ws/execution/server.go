@@ -8,9 +8,9 @@ import (
 
 	executionv1 "github.com/AnomalyFi/nodekit-sdk/structs"
 
-	"github.com/AnomalyFi/hypersdk/examples/tokenvm/actions"
-	trpc "github.com/AnomalyFi/hypersdk/examples/tokenvm/rpc"
 	"github.com/AnomalyFi/hypersdk/rpc"
+	"github.com/AnomalyFi/nodekit-seq/actions"
+	trpc "github.com/AnomalyFi/nodekit-seq/rpc"
 	"github.com/ava-labs/avalanchego/ids"
 
 	//core and eth are the ones which cause the issues
